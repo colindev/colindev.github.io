@@ -1,0 +1,223 @@
+<meta charset="utf-8">
+<style>
+  body {
+    background: #DDD;
+  }
+  h6 {
+    margin: 5px;
+    text-align: center;
+  }
+
+  fieldset {
+    border: 1px solid #AAA;
+    background: #EEE;
+  }
+  fieldset:after {
+    content: '.';
+    display: block;
+    height: 0;
+    overflow: hidden;
+    clear: both;
+  }
+
+  label {
+    display: block;
+  }
+  input {
+    width: 500px;
+  }
+
+  #display, #all-msg {
+    height: 500px;
+    width: 48%;
+    overflow: scroll;
+    border: 1px solid #FFF;
+    background: #DDD;
+    margin-top: 5px;
+  }
+  #display {
+    float: left;
+  }
+  #all-msg {
+    float: right;
+  }
+
+  p.msg {
+    margin: 0.3em;
+    padding: 0.3em;
+    background: #99FF33;
+    border-radius: 10px;
+    position: relative;;
+  }
+  p.msg span {
+    font-size: 8px;
+    color: #FFF;
+    position: absolute;
+    top: 0; right: 10px;
+  }
+
+  .fixed{clear: both;}
+</style>
+<form><input type="text" id="resource" name="resource" value="SocketConnection.js"><button type="submit">更換resource</button></form>
+<fieldset>
+  <legend>connect server</legend>
+  <label><input id="socket-url" placeholder="socket server url"></label>
+  <button id="connection"></button>
+</fieldset>
+
+<fieldset>
+  <legend>listen channel</legend>
+  <input id="channel-in" placeholder="channel_name">
+  <button id="listen"></button>
+  <h6>channel msg <------------------> all msg</h6>
+  <div class="fixed"></div>
+  <div id="display"></div>
+  <div id="all-msg"></div>
+</fieldset>
+
+<fieldset>
+  <legend>send</legend>
+  <input id="channel-out" placeholder="channel:message...">
+  <button id="send">發送</button>
+</fieldset>
+
+
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script>
+  var resource = 'socket.min.js';
+  var defer;
+  location.href.replace(/\?(.+)$/, function(m, $1){
+    $1.replace(/([^\^&=]+)(=[^&\$]+)?/g, function(m, $1, $2){
+      $2 = $2 && $2.replace(/^=/, '');
+
+      if ('resource' == $1 && $2) resource = $2;
+
+      $1.replace(/^defer(\[\])?$/, function(m, $1){
+        if ($1) {
+          if ( ! defer || ! defer.push) defer = [];
+          defer.push($2);
+        } else {
+          defer = [$2];
+        }
+      });
+
+    });
+  });
+  document.write('<script src="'+resource+'" name="Socket"><\/script>');
+  defer && defer.forEach(function(href){
+    document.write('<script src="'+href+'" name="Socket" defer><\/script>');
+  });
+</script>
+<script>
+
+  (function(
+          $inp_socket_url, $btn_conn,
+          $inp_chan_in, $btn_listen, $display, $all_msg,
+          $inp_chan_out, $btn_send){
+
+    var socket, listening;
+
+    $('input')
+      .on('blur', function(){
+        var $self = $(this),
+            name = $self.attr('id'),
+            val = $self.val();
+        $.cookie(name, val);
+      }).each(function(){
+        var $self = $(this),
+            id = $self.attr('id'),
+            val = '';
+            if ( ! id) return;
+            val = $.cookie(id);
+            val && $self.val(val);
+      });
+
+    $btn_conn.on('click', function(){
+      if (socket) {
+        listening && $btn_listen.click();
+        socket.close();
+        socket = null;
+
+        $btn_conn.text('connect');
+
+      } else {
+
+        socket = Socket.connect($inp_socket_url.val());
+        $all_msg.empty();
+
+        socket.on('message', function(e){
+          $all_msg.append('<p class="msg">'+JSON.stringify(e.data)+'<span>'+(new Date).toLocaleString()+'</span></p>').animate({scrollTop: $all_msg.get(0).scrollHeight}, 300);
+        });
+
+        socket.on('open', function(e){
+          $inp_socket_url.css('background', '#99FF33');
+        });
+
+        socket.on('close', function(e){
+          if (socket) $btn_conn.click();
+          $inp_socket_url.css('background', 'red');
+        });
+
+        $btn_conn.text('disconnect');
+      }
+
+    }).text('connect');
+
+    $btn_listen.on('click', function(){
+      if ( ! socket) {
+        alert('尚未建立連線!!');
+        return;
+      }
+
+      if (listening) {
+        socket.unlisten(listening);
+        listening = null;
+        $btn_listen.text('listen');
+        $inp_chan_in.removeAttr('readonly');
+      } else {
+        $inp_chan_in.attr('readonly', 'readonly');
+        listening = $inp_chan_in.val();
+        $display.empty();
+        socket.listen(listening, function(data){
+          $display.append('<p class="msg">'+JSON.stringify(data)+'<span>'+(new Date).toLocaleString()+'</span></p>').animate({scrollTop: $display.get(0).scrollHeight}, 300);
+        });
+        $btn_listen.text('unlisten');
+      }
+      
+    }).text('listen');
+
+
+
+    $btn_send.on('click', function(){
+      if ( ! socket) {
+        alert('尚未建立連線!!');
+        return;
+      }
+
+      socket.emit($inp_chan_out.val());
+      $inp_chan_out.val('');
+
+    });
+
+      $inp_chan_out.on('keypress', function(e){
+          e.keyCode === 13 && $btn_send.click();
+      });
+
+  })(
+
+    $('#socket-url'),
+    $('#connection'),
+
+    $('#channel-in'),
+    $('#listen'),
+    $('#display'),
+    $('#all-msg'),
+
+    $('#channel-out'),
+    $('#send')
+  );
+
+</script>
+
+
