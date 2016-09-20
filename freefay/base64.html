@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>base64</title>
+	<style type="text/css">
+		fieldset{ box-sizing: border-box;}
+		textarea{ width: 100%}
+	</style>
+</head>
+<body>
+	<fieldset>
+		<legend>encode</legend>
+		<textarea id="encode"></textarea>
+	</fieldset>
+		<fieldset>
+		<legend>decode</legend>
+		<textarea id="decode"></textarea>
+	</fieldset>
+
+	<script type="text/javascript" src="js/require.js"></script>
+	<script type="text/javascript">
+		require.config({
+           urlArgs: (new Date).getTime(),
+           paths: {
+               jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min',
+               'jquery.base64': 'js/jquery.base64'
+           },
+           shim: {
+               'jquery.base64': ['jquery']
+           }
+       });
+
+		require(['jquery', 'jquery.base64'], function($){
+			var $encode = $('#encode'),
+				$decode = $('#decode');
+			$encode.keyup(function(){
+				$decode.val($.base64.encode(this.value));
+			});
+			$decode.keyup(function(){
+				$encode.val($.base64.decode(this.value));
+			});
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>網址過濾器</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="css/theme.css" />
+        <style>
+            textarea {
+                width: 98%
+            }
+            #input_box {
+                height: 100px;
+            }
+            #display {
+                height: 500px
+            }
+        </style>
+    </head>
+    <body>
+        <div style="width:98%;">
+            <textarea id="input_box" style="height:100px"></textarea>
+            <textarea id="display"></textarea>
+            <button id="btn_filter">過濾</button>
+        </div>
+        
+<script>
+
+(function(){
+    var input_box = document.getElementById('input_box'),
+        display = document.getElementById('display'),
+        btn_filter = document.getElementById('btn_filter'),
+        re_href = /href="([^"]+)"/g,
+        re_need = [
+            /https?:\/\/apps\.facebook\.com\/flowershopfun\/\?(?:\w+=\w+(?:&amp;\w+=\w+)*)/,
+            /http:\/\/bit\.ly\/\w+/,
+            /http:\/\/goo\.gl\/\w+/,
+            /http:\/\/tinyurl\.com\/\w+/
+        ],
+        re_fake = /(?:https:\/\/www\.facebook\.com)?\/l\.php\?u=(.+?)&h=\w+?&s=\d/;
+
+    btn_filter.onclick = function () {
+        display.value = '';
+        var collection = [];
+        input_box.value = input_box.value.replace(re_href, function (x, href) {
+            // 處理FB的假連結
+            if (re_fake.test(href)) {
+                collection.push(decodeURIComponent(href.replace(re_fake, '$1').replace(/&amp;/g, '&').replace(/&h=.+$/, '')));
+            } else {
+                for (var i = 0, L = re_need.length; i < L; ++i) {
+                    if (re_need[i].test(href)) {
+                        collection.push(href.replace(/&amp;/g, '&'));
+                        break;
+                    }
+                }
+            }
+
+            return x;
+        });
+
+
+        display.value = collection.join('\n');
+    };
+})();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45958867-2', 'googledrive.com');
+  ga('send', 'pageview');
+
+</script>
+    </body>
+</html>

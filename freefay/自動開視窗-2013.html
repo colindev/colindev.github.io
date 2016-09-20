@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自動開視窗</title>
+<link rel="stylesheet" type="text/css" href="css/theme.css" />
+<style>
+textarea{ width:99%; height:500px; overflow:auto; }
+fieldset{ float:right; text-align:right; border: none;}
+fieldset label{ display:block;}
+fieldset label input{text-align:right; width:5em;}
+#frame_x{ width:0; height:0; border:3px solid #666; border-radius:3px; position:absolute;}
+</style>
+</head>
+
+<body>
+<iframe id="frame_x" src="about:blank"></iframe>
+<textarea id="url_box"></textarea>
+<button id="btn_start">開始</button>
+<button id="btn_stop">暫停</button>
+<span id="alert_box"></span>
+<fieldset>
+    <label>頻率<input id="inp_time" />秒</label>
+    <label>寬度<input id="inp_width" value="200" />PX</label>
+    <label>高度<input id="inp_height" value="600" />PX</label>
+    <label>距離上方<input id="inp_top" value="0" />PX</label>
+    <label>距離左方<input id="inp_left" value="0" />PX</label>
+    <label><input id="inp_open_window" type="checkbox" disabled="disabled" />是否彈出視窗</label>
+</fieldset>
+</body>
+</html>
+
+<script src="https://sites.google.com/site/colinjslib/cookie.js"></script>
+<script>
+(function(){
+	var cookie = new Cookie('20111217');
+	var btn_start = document.getElementById('btn_start');
+	var btn_stop = document.getElementById('btn_stop');
+	var url_box = document.getElementById('url_box');
+	var alert_box = document.getElementById('alert_box');
+	var inp_time = document.getElementById('inp_time');
+	var inp_width = document.getElementById('inp_width');
+	var inp_height = document.getElementById('inp_height');
+	var inp_top = document.getElementById('inp_top');
+	var inp_left = document.getElementById('inp_left');
+	var inp_open_window = document.getElementById('inp_open_window');
+	var frame_x = document.getElementById('frame_x');
+	var timer = null;
+	var windows = [];
+	var re = /[^\n]*(https{0,1}:\/\/[^\n\s]+)(\s+[^\r\n]*?){0,1}/;
+	var Default = {
+		time:4000, top:0, left:0, width:100, height:100, open_window:1
+	};
+	var options = {
+		time:0, top:0, left:0, width:0, height:0, open_window:1
+	}
+	for (var x in Default)
+	{
+		options[x] = parseInt(cookie.get(x), 10) || Default[x];
+	}
+	inp_time.value = (cookie.get('time') || Default.time)/1000;
+	inp_time.onchange = function()
+	{
+		var val = parseInt(this.value, 10) * 1000;
+		if (isNaN(val) || val < Default.time)
+		{
+			val = Default.time;
+			this.value = Default.time/1000;
+			alert_box.innerHTML = '最小不可低於'+this.value+'秒';
+		}
+		else
+		{
+			alert_box.innerHTML = '';
+			cookie.set('time', val);
+			cookie.store();
+		}
+		options.time = val;
+	}
+	inp_open_window.checked = (typeof cookie.get('open_window') == 'undefined')
+            ? Default.open_window
+            : !! parseInt(cookie.get('open_window'));
+	inp_open_window.onchange = function()
+	{
+		cookie.set('open_window', (inp_open_window.checked)?1:0);
+		cookie.store();
+	}
+
+	inp_width.value = cookie.get('width') || Default.width;
+	inp_width.onchange = function(){setParam(this, 'width');}
+	inp_height.value = cookie.get('height') || Default.height;
+	inp_height.onchange = function(){setParam(this, 'height');}
+	inp_top.value = cookie.get('top') || Default.top;
+	inp_top.onchange = function(){setParam(this, 'top');}
+	inp_left.value = cookie.get('left') || Default.left;
+	inp_left.onchange = function(){setParam(this, 'left');}
+	function setParam(el, param_name)
+	{
+		var val = parseInt(el.value, 10);
+		if (isNaN(val) || val < Default[param_name])
+		{
+			val = Default[param_name];
+			el.value = Default[param_name];
+			alert_box.innerHTML = '最小不可低於'+Default[param_name]+' PX';
+		}
+		else
+		{
+			alert_box.innerHTML = '';
+			cookie.set(param_name, val);
+			cookie.store();
+		}
+		options[param_name] = val;
+	}
+	
+	btn_stop.onclick = function(){timer = clearTimeout(timer);alert_box.innerHTML = '停止';frameInit();}
+	btn_start.onclick = function()
+	{
+		alert_box.innerHTML = '開始';
+		next();
+	}
+	function next()
+	{
+		timer = clearTimeout(timer);
+		if (!re.test(url_box.value)) {
+			alert_box.innerHTML = '結束';
+			frameInit();
+			return;
+		}
+		var fun = null;
+		if (inp_open_window.checked)
+		{
+			fun = openW;
+		}
+		else
+		{
+			fun = openIframe;
+		}
+		url_box.value = url_box.value.replace(re, fun);
+		timer = setTimeout(next, options.time);
+	}
+	function openW(x,m1)
+	{
+		var w = window.open(m1, null, 'height='+options.height+', width='+options.width+', top='+options.top+', left='+options.left+', toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+		setTimeout(function(){
+			w.close();
+		}, options.time);
+		return '';
+	}
+	function openIframe(x,m1)
+	{
+		frame_x.src = m1;
+		frame_x.style.position = 'absolute';
+		frame_x.style.width = options.width + 'px';
+		frame_x.style.height = options.height + 'px';
+		frame_x.style.top = options.top + 'px';
+		frame_x.style.left = options.left + 'px';
+		return '';
+	}
+	function frameInit()
+	{
+		frame_x.style.width = '0px';
+		frame_x.style.height = '0px';
+		frame_x.style.top = '0px';
+		frame_x.style.left = '0px';
+	}
+})();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45958867-1', 'googledrive.com');
+  ga('send', 'pageview');
+
+</script>

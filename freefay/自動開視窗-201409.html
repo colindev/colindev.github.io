@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自動開視窗-2014</title>
+<link rel="stylesheet" type="text/css" href="css/alertify.core.css" />
+<link rel="stylesheet" type="text/css" href="css/alertify.default.css" />
+<link rel="stylesheet" type="text/css" href="css/theme.css" />
+<style>
+textarea{ width:99%; height:500px; overflow:auto; }
+fieldset{ float: left; text-align:left; border: none;}
+fieldset label{ display:block;}
+fieldset label input{text-align:right; width:5em;}
+</style>
+</head>
+
+<body>
+    
+    <textarea id="url_box"></textarea>
+    <button id="start">開始</button>
+    <button id="stop">暫停</button>
+    <span id="statue"></span>
+    <hr>
+    <fieldset>
+        <label>頻率<input id="wait" rule="^[1-9]\d*$" value="10" class="option" />秒</label>
+        <label>視窗數量<input id="windows" rule="^[1-9]\d*$" value="1" class="option" />個</label>
+        <label>在<input id="duration" rule="^(?:0|[1-9]\d*)$" value="500" class="option" />毫秒間開出</label>
+        <label>錯開<input id="space" rule="^(?:0|[1-9]\d*)$" class="option" value="30" />PX</label>
+    </fieldset>
+    <fieldset>
+        <label>寬度<input id="width" rule="^[1-9]\d*$" class="option" value="200" />PX</label>
+        <label>高度<input id="height" rule="^[1-9]\d*$" class="option" value="600" />PX</label>
+        <label>距離上方<input id="top" rule="^-?\d+$" class="option" value="0" />PX</label>
+        <label>距離左方<input id="left" rule="^-?\d+$" class="option" value="0" />PX</label>
+    </fieldset>
+
+    <script type="text/javascript" src="js/require.js"></script>
+    <script type="text/javascript">
+        require.config({
+            waitSeconds: 60,
+//            urlArgs: (new Date).getTime(),
+            paths: {
+                jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min',
+                'jquery.cookie': 'js/jquery.cookie',
+                alertify: 'js/alertify',
+                Batch: 'js/batch',
+                WCtl: 'js/wctl'
+            },
+            shim: {
+                'jquery.cookie': ['jquery']
+            }
+        });
+        
+        require(['jquery', 'alertify', 'Batch', 'WCtl', 'jquery.cookie'], function($, alertify, Batch, WCtl){
+
+            var $url_box = $('#url_box'),
+                $statue = $('#statue'),
+                $wait = $('#wait'),
+                $windows = $('#windows'),
+                $duration = $('#duration'),
+                $space = $('#space'),
+                $width = $('#width'),
+                $height = $('#height'),
+                $top = $('#top'),
+                $left = $('#left'),
+                re_url = /[^\n]*(https{0,1}:\/\/[^\n\s]+)(\s+[^\r\n]*?){0,1}/,
+                timer;
+            
+            // 初始化設定值
+            $('.option').
+                focus(function(){
+                    this._prev_value = this.value;
+                }).
+                change(function(){
+                
+                    var rule = this.getAttribute('rule');
+
+                    if (rule && ! this.value.match(new RegExp(rule))) {
+                        var bad_value = this.value;
+
+                        this.value = $.cookie(this.id) || this._prev_value;
+
+                        alertify.error('設定 ' + bad_value + ' 失敗');
+
+                        return false;
+                    }
+
+                    alertify.success('設定 ' + this.value + ' 成功');
+
+                    $.cookie(this.id, this.value);
+                }).
+                each(function(){
+                    this.value = $.cookie(this.id) || this.value;
+                });
+                           
+            function action(i)
+            {
+                if ( ! $url_box.val().match(re_url)) {
+                    $('#stop').click();
+                    return false;
+                }
+                
+                var w = new WCtl({
+                    width: $width.val() + 'px',
+                    height: $height.val() + 'px',
+                    left: (parseInt($left.val(), 10) + (i * $space.val())) + 'px',
+                    top: $top.val() + 'px'
+                });
+
+                $url_box.val($url_box.val().replace(re_url, function(all, url){
+                    w.open(url, (new Date).getTime() + '-' + i);
+                    alertify.log('開啟:' + url.replace(/(.{40})/g, '$1<wbr>'));
+                    return '';
+                }));
+                
+                setTimeout(function(){
+					console.log(w.onbeforeunload, w.onunload);
+					
+					w.onclose = 
+					w.onunload = 
+					w.onbeforeunload = function(){};
+					
+                    w.close();
+                }, $wait.val()*1000);
+            }
+            
+            $('#start').click(function(){
+                $statue.text('開始');
+                system_on = true;
+                if ( ! timer) {
+                    
+                    (new Batch($duration.val())).run(action, $windows.val());
+                    
+                    timer = setInterval(function(){
+                        (new Batch($duration.val())).run(action, $windows.val());
+                    }, $wait.val() * 1000);
+                }
+            });
+            
+            $('#stop').click(function(){
+                $statue.text('停止');
+                if (timer) {
+                    timer = clearInterval(timer);
+                }
+            });
+        });
+        
+    </script>
+    
+    <script type="text/javascript">
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-45958867-1', 'googledrive.com');
+      ga('send', 'pageview');
+
+    </script>
+</body>

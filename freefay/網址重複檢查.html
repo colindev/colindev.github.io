@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>網址重複檢查</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="css/theme.css" />
+        <style>
+            textarea {
+                width: 98%
+            }
+            #originally_box {
+                height: 100px;
+            }
+            #new_box {
+                height: 500px
+            }
+        </style>
+    </head>
+    <body>
+        <div style="width:98%;">
+            <textarea id="originally_box" style="height:100px"></textarea>
+            <textarea id="new_box"></textarea>
+            <hr>
+            <button id="btn_duplicate_check">檢查</button>
+        </div>
+        
+<script>
+(function(){
+    var originally_box = document.getElementById('originally_box');
+    var new_box = document.getElementById('new_box');
+    var btn_duplicate_check = document.getElementById('btn_duplicate_check');
+    var re = /https?:\/\/\w+(?:\.\w+)*(?:\/?\w*)*(?:\?\w+=\w+(?:&(?:amp;)?\w+=\w+)*)?/g
+    
+    btn_duplicate_check.onclick = function () {
+        var collection = {};
+        originally_box.value.replace(re, function(href){
+            href = href.replace(/&amp;/g, '&');
+            if ( ! collection[href]) {
+                collection[href] = 1;
+            }
+        });
+
+        new_box.value = new_box.value.replace(re, function(href){
+            href = href.replace(/&amp;/g, '&');
+            if (collection.hasOwnProperty(href)) {
+                return '';
+            }
+            return href;
+        });
+    };
+})();
+</script>
+        
+    </body>
+</html>

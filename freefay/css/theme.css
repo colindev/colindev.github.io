@@ -1,0 +1,5 @@
+/* 配色 */
+body{background: #275254; color: #FFF; margin: 80px 50px;}
+textarea{background: #277e95; color: #FFF; border: none; cursor: pointer;}
+hr{ border: none; border-bottom: 1px solid #589395;}
+input{margin: 0.3em 0.5em;}
