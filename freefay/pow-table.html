@@ -1,8 +1,8 @@
 <table>
     <tbody id="box"></tbody>
     <caption>
-    <label>Row<input id="row" value="10"></label>
-    <label>Cell<input id="cell" value="10"></label>
+    <label>底數<input id="row" value="10"></label>
+    <label>指數<input id="cell" value="10"></label>
     <button id="rander-btn">Create Table</button>
     </caption>
 </table>
@@ -47,8 +47,12 @@ tr:first-child td{
                 var cDom = rDom.insertCell(c);
                 
                 if (r == 0) {
-                    // 橫標
-                    cDom.innerText = c;
+                    if (c == 0) {
+                        cDom.innerText = '底數＼指數';
+                    } else {
+                        // 橫標
+                        cDom.innerText = c;
+                    }
                 } else if (c == 0) {
                     // 縱標
                     cDom.innerText = r;
