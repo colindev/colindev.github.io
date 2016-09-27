@@ -1,0 +1,82 @@
+<table>
+    <tbody id="box"></tbody>
+    <caption>
+    <label>Row<input id="row" value="10"></label>
+    <label>Cell<input id="cell" value="10"></label>
+    <button id="rander-btn">Create Table</button>
+    </caption>
+</table>
+
+<style>
+
+input {
+    width: 3em;
+}
+
+td {
+    padding: 0.1em 0.2em;
+    border: 1px solid hsla(84, 80%, 55%, 0.5);   
+    text-align: right;
+}
+td:first-child,
+tr:first-child td{
+    text-align: center;
+    font-weight: bold;
+    color: rgba(0,0,0,0.6);
+
+    border: none;
+    min-width: 5em;
+}
+
+
+</style>
+
+<script>
+(function(){
+    var box = document.getElementById('box'),
+        row = document.getElementById('row'),
+        cell = document.getElementById('cell'),
+        randerBtn = document.getElementById('rander-btn');
+
+    function createTable(tb, row, cell) {
+        tb.innerHTML = '';
+
+        for (var r = 0; r < row; r++) {
+            var rDom = tb.insertRow(r);
+            for (var c = 0; c < cell; c++) {
+                var cDom = rDom.insertCell(c);
+                
+                if (r == 0) {
+                    // 橫標
+                    cDom.innerText = c;
+                } else if (c == 0) {
+                    // 縱標
+                    cDom.innerText = r;
+                } else {
+                    cDom.innerText = Math.pow(c, r);
+                }
+            }
+        }
+    }
+
+    randerBtn.onclick = function(e){
+        row.value = parseInt(row.value, 10) || 10;
+        cell.value = parseInt(cell.value, 10) || 10;
+
+        createTable(box, row.value, cell.value);
+    };
+
+    randerBtn.click();
+
+})();
+</script>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45958867-5', 'auto');
+  ga('send', 'pageview');
+
+</script>
