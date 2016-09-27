@@ -1,3 +1,11 @@
+<html>
+<head>
+    <meta content="text/html" charset="UTF-8">
+    <title>指數表</title>
+</head>
+
+<body>
+
 <table>
     <tbody id="box"></tbody>
     <caption>
@@ -9,8 +17,12 @@
 
 <style>
 
+caption {
+    text-align: left;
+}
 input {
     width: 3em;
+    text-align: right;
 }
 
 td {
@@ -31,6 +43,8 @@ tr:first-child td{
 
 </style>
 
+</body>
+
 <script>
 (function(){
     var box = document.getElementById('box'),
@@ -41,9 +55,9 @@ tr:first-child td{
     function createTable(tb, row, cell) {
         tb.innerHTML = '';
 
-        for (var r = 0; r < row; r++) {
+        for (var r = 0; r <= row; r++) {
             var rDom = tb.insertRow(r);
-            for (var c = 0; c < cell; c++) {
+            for (var c = 0; c <= cell; c++) {
                 var cDom = rDom.insertCell(c);
                 
                 if (r == 0) {
