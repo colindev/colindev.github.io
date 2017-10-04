@@ -7,9 +7,9 @@ subscription-manager register --username "${RHEL_USER}" --password "${RHEL_PASSW
 
 yum update -y
 
-yum install  -y gcc
-
 # 安裝 kernel source 給 VBOXADDITION 用
 yum install -y kernel-devel-`uname -r`
 
+# 安裝開發工具群
+yum groupinstall -y 'Development tools'
 

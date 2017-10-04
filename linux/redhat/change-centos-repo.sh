@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# curl https://colindev.github.io/linux/redhat/change-centos-repo.sh | sudo bash
+
 
 releasever=7
 
@@ -32,7 +35,7 @@ gpgcheck=0
 EOF
 
 cd /tmp
-sudo yum install pam.i686 -y --downloadonly --downloaddir=/tmp
-sudo rpm -ivh --force --nodeps `ls pam-*.rpm`
-sudo yum reinstall pam.i686
-sudo yum distribution-synchronization
+yum install pam.i686 -y --downloadonly --downloaddir=/tmp
+rpm -ivh --force --nodeps `ls pam-*.rpm`
+yum reinstall pam.i686
+yum distribution-synchronization
