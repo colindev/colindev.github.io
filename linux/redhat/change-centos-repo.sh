@@ -37,5 +37,5 @@ EOF
 cd /tmp
 yum install pam.i686 -y --downloadonly --downloaddir=/tmp
 rpm -ivh --force --nodeps `ls pam-*.rpm`
-yum reinstall pam.i686
-yum distribution-synchronization
+yum reinstall pam.i686 -y
+yum distribution-synchronization -y
