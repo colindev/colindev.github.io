@@ -35,6 +35,9 @@ class Factory {
 }
 
 // entry point
+if (count($argv) != 2) {
+    die("Usage: {$argv[0]} [A/B]");
+} 
 
 $myOrder = Factory::build(@$argv[1]);
 

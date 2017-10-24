@@ -52,6 +52,7 @@ $factoryName = 'Set'.strToUpper($argv[1]).'Factory';
 
 // 安全檢查
 if ( ! class_exists($factoryName)) {
+    echo "Usage: {$argv[0]} [A/B]\n";
     die("\033[31m[".$factoryName."] not found\033[m\n");
 }
 

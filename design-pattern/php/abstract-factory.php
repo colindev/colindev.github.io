@@ -94,3 +94,5 @@ if (!$factory || count($argv) < 4) {
 
 echo $factory->MakeBurger((string)$argv[2]), " + ", $factory->MakeBeverage((string)$argv[3]), PHP_EOL;
 
+// 優點: 封裝建構細節, 要增加另一系列商品很快
+// 缺點: 如果要增加附餐, 要改很多, 如果商品系列多那就得改更多
