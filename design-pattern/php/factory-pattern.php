@@ -51,7 +51,7 @@ $factoryName = 'Set'.strToUpper($argv[1]).'Factory';
 
 // 安全檢查
 if ( ! class_exists($factoryName)) {
-    die($factory." not found");
+    die("\033[31m[".$factoryName."] not found\033[m\n");
 }
 
 $factory = new $factoryName;
