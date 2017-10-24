@@ -4,6 +4,7 @@
 // sets interface
 interface ISets {
     public function setItem($item);
+    public function __tostring();
 }
 
 // classes
@@ -57,3 +58,7 @@ if ( ! class_exists($factoryName)) {
 $factory = new $factoryName;
 $sets = $factory->make();
 echo $sets, PHP_EOL;
+
+// 優點: 相對於簡單工廠, 工廠方法避免了增加產品需要更動工廠的麻煩
+// 缺點: 重現了簡單工廠想避免使用者(工程師)認識各類型產品的類別名稱
+// 要認識各個工廠名稱

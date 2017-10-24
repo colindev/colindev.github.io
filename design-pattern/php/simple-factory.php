@@ -2,42 +2,43 @@
 <?php
 
 // interface
-interface Game {
-    public function Name();
+interface ISets {
+    public function __tostring();
 }
 
 // game class
-class GameA implements Game {
-    public function Name() {
-        return "Game A";
+class SetsA implements ISets {
+    public function __tostring() {
+        return "薯條+可樂+大麥克";
     }
 }
 
-class GameB implements Game {
-    public function Name() {
-        return "Game B";
+class SetsB implements ISets {
+    public function __tostring() {
+        return "紅茶+沙拉+雞塊";
     }
 }
 
 // single factory
-class GameFactory {
-    public static function build($gameType) {
-        $game = null;
-        switch (strToUpper($gameType)) {
+class Factory {
+    public static function build($setsType) {
+        $sets = null;
+        switch (strToUpper($setsType)) {
         case "A":
-            $game = new GameA(); break;
+            $sets = new SetsA(); break;
         case "B":
-            $game = new GameB(); break;
+            $sets = new SetsB(); break;
         }
 
-        return $game;
+        return $sets;
     }
 }
 
 // entry point
 
-$game = GameFactory::build(@$argv[1]);
+$myOrder = Factory::build(@$argv[1]);
 
-var_dump($game);
+echo $myOrder, PHP_EOL;
 
 // 缺點: 要增加類別都必須改動build 方法
+// 違反開放封閉原則
