@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 // interface
@@ -34,14 +33,16 @@ class Factory {
     }
 }
 
-// entry point
-if (count($argv) != 2) {
-    die("Usage: {$argv[0]} [A/B]");
-} 
+// entry point ======================================
+function main($flags) {
 
-$myOrder = Factory::build(@$argv[1]);
+    $usage = $flags->usage;
+    $setsType = array_shift($flags->args);
+    if ( ! $setsType) {
+        return $usage('[A/B]');
+    }
 
-echo $myOrder, PHP_EOL;
-
+    return Factory::build($setsType);
+}
 // 缺點: 要增加類別都必須改動build 方法
 // 違反開放封閉原則

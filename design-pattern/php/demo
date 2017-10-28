@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+
+if (count($argv) <= 1) {
+    echo "\033[2mavailable commands\033[m", PHP_EOL;
+    $dir = opendir(__DIR__);
+    while ($file = readdir($dir)) {
+        if ($file == '.' || $file == '..' || $file == basename(__FILE__)) {
+            continue;
+        }
+
+        echo "\t", preg_replace('/.php$/i', '', $file), PHP_EOL;
+    }
+    closedir($dir);
+    echo PHP_EOL;
+    die;
+}
+
+$command = $argv[1];
+$usage = function($prompt) use($argv, $command){
+    return "\033[31mUsage: {$argv[0]} {$command} {$prompt}\033[m";
+};
+$args = array_slice($argv, 2);
+
+// IoC (Inversion of Control) 依賴倒轉/控制反轉
+$flags = new stdclass();
+$flags->{'usage'} = $usage;
+$flags->{'args'} = $args;
+
+require __DIR__."/{$command}.php";
+
+// output
+echo str_repeat('-', 15), PHP_EOL;
+echo "\033[32m", main($flags), "\033[m", PHP_EOL;
+echo str_repeat('-', 15), PHP_EOL;

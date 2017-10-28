@@ -1,65 +1,71 @@
-#!/usr/bin/env php
 # 工廠方法模式
 <?php
 // sets interface
 interface ISets {
-    public function setItem($item);
-    public function __tostring();
+    public function __toString();
 }
 
 // classes
-class Sets implements ISets {
+class SetsA implements ISets {
 
-    private $items = array();
-    public function setItem($item) {
-        $this->items[] = $item;
-    }
+    private $items = array(
+        '可樂',
+        '薯條',
+        '大麥克',
+    );
 
     public function __tostring() {
         return join($this->items, " + ");
     }
 }
 
+class SetsB implements ISets {
+
+    private $items = array(
+        '紅茶',
+        '沙拉',
+        '麥香魚',
+    );
+
+    public function __tostring() {
+        return join($this->items, " + ");
+    }
+} 
+
 // sets factory
-interface Factory {
+interface IFactory {
     public function make();
 }
 
-class SetAFactory implements Factory {
+class SetsAFactory implements IFactory {
     public function make() {
-        $sets = new Sets();
-        $sets->setItem("可樂");
-        $sets->setItem("薯條");
-        $sets->setItem("大麥克");
-
-        return $sets;
+        return new SetsA();
     }
 }
 
-class SetBFactory implements Factory {
+class SetsBFactory implements IFactory {
     public function make() {
-        $sets = new Sets();
-        $sets->setItem("紅茶");
-        $sets->setItem("沙拉");
-        $sets->setItem("麥香魚");
-
-        return $sets;
+        return new SetsB();
     }
 }
 
-// entry point
-$factoryName = 'Set'.strToUpper($argv[1]).'Factory';
+// entry point =======================================
+function main($flags) {
 
-// 安全檢查
-if ( ! class_exists($factoryName)) {
-    echo "Usage: {$argv[0]} [A/B]\n";
-    die("\033[31m[".$factoryName."] not found\033[m\n");
+    $usage = $flags->usage;
+    $setsType = array_shift($flags->args);
+    $factoryName = 'Sets'.strToUpper($setsType).'Factory';
+    
+    // 安全檢查
+    if ( ! class_exists($factoryName)) {
+        return $usage('[A/B]');
+    }
+    
+    // 取得工廠實體
+    $factory = new $factoryName;
+    // 用共同界面方法產生套餐
+    return $factory->make();
 }
-
-$factory = new $factoryName;
-$sets = $factory->make();
-echo $sets, PHP_EOL;
-
 // 優點: 相對於簡單工廠, 工廠方法避免了增加產品需要更動工廠的麻煩
 // 缺點: 重現了簡單工廠想避免使用者(工程師)認識各類型產品的類別名稱
 // 要認識各個工廠名稱

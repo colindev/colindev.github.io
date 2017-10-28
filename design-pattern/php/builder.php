@@ -14,5 +14,7 @@ interface IItem {
     // 取得價格
     public function price();
     // 製作
-
+    public function make();
 }
+
+
