@@ -5,6 +5,7 @@
 class Exam {
     private $name = '';
     private $context = array();
+    private $num = 0;
     public function setContext($question, $aswer) {
         $this->context[$question] = $aswer;
     }
@@ -16,20 +17,18 @@ class Exam {
 
         // 我們這先不探討沒有考題時的錯誤處理
         $numPerQuestion = 100/count($this->context);
-        $gotNum = 0;
 
         foreach ($this->context as $question => $aswer) {
             yield $question;
 
             if (trim(fgets(STDIN)) == $aswer) {
-                $gotNum += $numPerQuestion;
-                yield 'O';
-            } else {
-                yield 'X';
+                $this->num += $numPerQuestion;
             }
         }
+    }
 
-        yield "{$this->name} got {$gotNum}";
+    public function count() {
+        return "{$this->name} got {$this->num}";
     }
 }
 
@@ -40,12 +39,21 @@ function main() {
     $exam->setContext('2 + 2 = ?', '4');
     $exam->setContext('1 + 2 + 3 = ?', '6');
 
+
     // 模擬3個學生考試
+    // 故意先把考卷填寫完後先放陣列內在下一個迴圈輸出
+    $exams = array();
     for ($i = 0; $i < 3; $i++) {
         $cloneExam = clone $exam;
         foreach ($cloneExam->test() as $lien) {
             yield $lien;
         }
+        $exams[] = $cloneExam;
+    }
+
+    // 最後老師批改分數
+    foreach ($exams as $cloneExam) {
+        yield $cloneExam->count();
     }
 }
 
