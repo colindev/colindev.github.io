@@ -4,7 +4,7 @@
  - 抽象工廠 Abstract Factory [php](php/abstract-factory.php) [UML](abstract-factory.png)
  - 建構者 Builder [php](php/builder.php) [UML](builder.png)
  - 獨體 Singleton [php](php/singleton.php)
- - [原型 Prototype]
+ - 原型 Prototype [php](php/prototype.php)
 
 ### Structural 結構型
  - [轉接 Adapter]
