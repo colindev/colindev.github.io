@@ -3,7 +3,7 @@
  - 工廠方法 Factory Method [php](php/factory-pattern.php) [UML](factory.png)
  - 抽象工廠 Abstract Factory [php](php/abstract-factory.php) [UML](abstract-factory.png)
  - 建構者 Builder [php](php/builder.php) [UML](builder.png)
- - [獨體 Singleton]
+ - 獨體 Singleton [php](php/singleton.php)
  - [原型 Prototype]
 
 ### Structural 結構型
