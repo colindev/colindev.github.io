@@ -36,21 +36,14 @@ class NormalClass {
 // entry point
 function main() {
 
-    $output = array();
-
     // 每秒建構一次 共三次
     for ($i = 0; $i < 3; $i++) {
         $singleton = Singleton::instance();
-        $output[] = "singleton: {$singleton}";
-
         $normal = new NormalClass();
-        $output[] = "normal: {$normal}";
+        yield "singleton: {$singleton} .. normal: {$normal}";
 
-        $output[] = "---";
         sleep(1);
     }
-
-    return join($output, PHP_EOL);
 }
 
 // 優點: 防呆, 防止二次建構你只需要建構一次用到底的物件 如 DB連線

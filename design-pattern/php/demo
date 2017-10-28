@@ -31,5 +31,15 @@ require __DIR__."/{$command}.php";
 
 // output
 echo str_repeat('-', 15), PHP_EOL;
-echo "\033[32m", main($flags), "\033[m", PHP_EOL;
+$ret = main($flags);
+
+echo "\033[32m";
+if (is_string($ret)) {
+    echo $ret, PHP_EOL;
+} else if ($ret instanceof Generator) {
+    foreach ($ret as $str) {
+        echo $str, PHP_EOL;
+    }
+}
+echo "\033[m", PHP_EOL;
 echo str_repeat('-', 15), PHP_EOL;
