@@ -8,7 +8,7 @@
 
 ### Structural 結構型
  - 轉接 Adapter [php](php/adapter.php) [UML](adapter.png)
- - [橋接 Bridge]
+ - 橋接 Bridge [php](php/bridge.php) [UML](bridge.png)
  - [組合 Composite]
  - [裝飾 Decorator]
  - [外觀 Facade]
