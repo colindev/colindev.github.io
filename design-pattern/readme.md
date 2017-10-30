@@ -7,7 +7,7 @@
  - 原型 Prototype [php](php/prototype.php)
 
 ### Structural 結構型
- - [轉接 Adapter]
+ - 轉接 Adapter [php](php/adapter.php) [UML](adapter.png)
  - [橋接 Bridge]
  - [組合 Composite]
  - [裝飾 Decorator]
