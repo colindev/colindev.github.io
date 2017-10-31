@@ -11,19 +11,19 @@
  - 橋接 Bridge [php](php/bridge.php) [UML](bridge.png)
  - 組合 Composite [php](php/composite.php) [UML](composite.png)
  - 裝飾 Decorator [php](php/decorator.php) [UML](decorator.png)
- - [外觀 Facade]
- - [享元 Flyweight]
- - [代理 Proxy]
+ - 外觀 Facade
+ - 享元 Flyweight
+ - 代理 Proxy
 
 ### Behavioral 行為
- - [責任鍊 Chain-of-responsibility]
- - [命令 Command]
- - [解釋器 Interpreter]
- - [迭代器 Iterstor]
- - [中介者 Mediator]
- - [備忘錄 Memento]
- - [觀察者 Observer]
- - [狀態 State]
- - [策略 Strategy]
- - [樣板方法 Template Method]
- - [訪問者 Visitor]
+ - 責任鍊 Chain-of-responsibility
+ - 命令 Command
+ - 解釋器 Interpreter
+ - 迭代器 Iterstor
+ - 中介者 Mediator
+ - 備忘錄 Memento
+ - 觀察者 Observer
+ - 狀態 State
+ - 策略 Strategy
+ - 樣板方法 Template Method
+ - 訪問者 Visitor

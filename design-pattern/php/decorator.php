@@ -38,6 +38,8 @@ function main($flags) {
         yield $usage('[A..E[A..E[A..E]]]');
         return;
     }
+    
+    // 產品列表
     $productList = array(
         'A' => array('大麥克', 50),
         'B' => array('麥香魚', 45),
@@ -45,7 +47,7 @@ function main($flags) {
         'D' => array('紅茶', 15),
         'E' => array('薯條', 30),
     );
-    // 產品列表
+
     $args = array_map(function($str){return strtoupper($str);}, $args);
     $item = $productList[array_shift($args)];
     $meal = new Product($item[0], $item[1]);
