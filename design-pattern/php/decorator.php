@@ -29,11 +29,30 @@ class Product implements ProductionDecorator {
 
 // 原本應該把各種產品分各自class 撰寫
 
-function main() {
+function main($flags) {
+
+    $usage = $flags->usage;
+    $args = $flags->args;
+
+    if ( ! count($args) || preg_match('/^[^A-E\s]$/i', join($args, ''))) {
+        yield $usage('[A..E[A..E[A..E]]]');
+        return;
+    }
+    $productList = array(
+        'A' => array('大麥克', 50),
+        'B' => array('麥香魚', 45),
+        'C' => array('可樂', 20),
+        'D' => array('紅茶', 15),
+        'E' => array('薯條', 30),
+    );
     // 產品列表
-    $meal = new Product('大麥克', 50);
-    $meal = (new Product('可樂', 25))->with($meal);
-    $meal = (new Product('薯條', 30))->with($meal);
+    $args = array_map(function($str){return strtoupper($str);}, $args);
+    $item = $productList[array_shift($args)];
+    $meal = new Product($item[0], $item[1]);
+    foreach ($args as $str) {
+        $item = $productList[$str];
+        $meal = (new Product($item[0], $item[1]))->with($meal);
+    }
 
     yield $meal->getContext();
 
