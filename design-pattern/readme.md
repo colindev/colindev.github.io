@@ -12,7 +12,7 @@
  - 組合 Composite [php](php/composite.php) [UML](composite.png)
  - 裝飾 Decorator [php](php/decorator.php) [UML](decorator.png)
  - 外觀 Facade [php](php/facade.php) [UML](facade.png)
- - 享元 Flyweight
+ - 享元 Flyweight - 這個模式用php 單線程一次性的程序寫範例不是很適合
  - 代理 Proxy
 
 ### Behavioral 行為
