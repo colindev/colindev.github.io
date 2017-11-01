@@ -13,10 +13,10 @@
  - 裝飾 Decorator [php](php/decorator.php) [UML](decorator.png)
  - 外觀 Facade [php](php/facade.php) [UML](facade.png)
  - 享元 Flyweight - 這個模式用php 單線程一次性的程序寫範例不是很適合
- - 代理 Proxy
+ - 代理 Proxy [php](php/proxy.php) [UML](proxy.png)
 
 ### Behavioral 行為
- - 責任鍊 Chain-of-responsibility
+ - 責任鍊 Chain-of-responsibility [golang]
  - 命令 Command
  - 解釋器 Interpreter
  - 迭代器 Iterstor
