@@ -11,7 +11,7 @@
  - 橋接 Bridge [php](php/bridge.php) [UML](bridge.png)
  - 組合 Composite [php](php/composite.php) [UML](composite.png)
  - 裝飾 Decorator [php](php/decorator.php) [UML](decorator.png)
- - 外觀 Facade
+ - 外觀 Facade [php](php/facade.php) [UML](facade.png)
  - 享元 Flyweight
  - 代理 Proxy
 
