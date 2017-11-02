@@ -104,7 +104,7 @@ func main() {
 	invoker.Add(cmdB)
 	invoker.Add(cmdX)
 
-	// 臨時取消一筆, 在程式世界裡比較少add後再remove
+	// 臨時取消一筆, 一般來說比較少add後再remove
 	// 但並非沒有
 	// 思考: 購物車&庫存系統缺貨判斷
 	invoker.Remove(cmdA)
