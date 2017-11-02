@@ -62,24 +62,24 @@ func (c *CommandPlug) Exec() {
 }
 
 // 命令收集器
-type CommandCollecter struct {
+type CommandInvoker struct {
 	commands map[Command]bool
 }
 
-func (cc *CommandCollecter) Add(c Command) {
+func (cc *CommandInvoker) Add(c Command) {
 	// 僅看單線程,先不做Lock
 	cc.commands[c] = true
 }
-func (cc *CommandCollecter) Remove(c Command) {
+func (cc *CommandInvoker) Remove(c Command) {
 	delete(cc.commands, c)
 }
-func (cc *CommandCollecter) SendCommand() {
+func (cc *CommandInvoker) SendCommand() {
 	for c := range cc.commands {
 		c.Exec()
 	}
 }
-func NewCollecter() *CommandCollecter {
-	return &CommandCollecter{
+func NewInvoker() *CommandInvoker {
+	return &CommandInvoker{
 		commands: map[Command]bool{},
 	}
 }
@@ -87,7 +87,7 @@ func NewCollecter() *CommandCollecter {
 func main() {
 
 	// 建構一個命令收集器, 在餐廳範例內屬於服務生角色
-	collecter := NewCollecter()
+	invoker := NewInvoker()
 
 	// 建構一個命令接收者(廚師)
 	receiver := &Receiver{}
@@ -100,12 +100,15 @@ func main() {
 	cmdX := &CommandPlug{Receiver: &PlugReceiver{}}
 
 	// 服務收收單
-	collecter.Add(cmdA)
-	collecter.Add(cmdB)
-	collecter.Add(cmdX)
-	// 取消一筆
-	collecter.Remove(cmdA)
+	invoker.Add(cmdA)
+	invoker.Add(cmdB)
+	invoker.Add(cmdX)
+
+	// 臨時取消一筆, 在程式世界裡比較少add後再remove
+	// 但並非沒有
+	// 思考: 購物車&庫存系統缺貨判斷
+	invoker.Remove(cmdA)
 
 	// 確認送單
-	collecter.SendCommand()
+	invoker.SendCommand()
 }
