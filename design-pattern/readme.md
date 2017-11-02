@@ -16,8 +16,8 @@
  - 代理 Proxy [php](php/proxy.php) [UML](proxy.png)
 
 ### Behavioral 行為
- - 責任鍊 Chain-of-responsibility [golang]
- - 命令 Command
+ - 責任鍊 Chain-of-responsibility [golang](golang/chain-of-responsibility/main.go) [UML](chain-of-responsibility.png)
+ - 命令 Command [golang](golang/command/main.go)
  - 解釋器 Interpreter
  - 迭代器 Iterstor
  - 中介者 Mediator
