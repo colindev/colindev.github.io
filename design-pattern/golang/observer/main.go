@@ -15,12 +15,14 @@ type (
 	Subject interface {
 		Register(Observer)
 		Unregister(Observer)
-		Notify(Payload)
+		Notify()
+		SetState(Payload) Subject
+		GetState() Payload
 	}
 
 	// 訂閱者
 	Observer interface {
-		Update(Payload)
+		Update(Subject)
 	}
 
 	// 依照不同語言選擇的資料介面
@@ -32,8 +34,8 @@ type (
 
 type StdinSubject struct {
 	// 順便demo 繼承
-	sync.WaitGroup
-	sync.Mutex
+	sync.RWMutex
+	state     Payload
 	observers map[Observer]bool
 }
 
@@ -47,22 +49,31 @@ func (ss *StdinSubject) Unregister(o Observer) {
 	defer ss.Unlock()
 	delete(ss.observers, o)
 }
-func (ss *StdinSubject) Notify(p Payload) {
-	ss.Lock()
-	ss.Add(len(ss.observers))
+func (ss *StdinSubject) Notify() {
+	ss.RLock()
+	defer ss.RUnlock()
 	for o := range ss.observers {
 		go func(o Observer) {
-			o.Update(p)
-			ss.Done()
+			o.Update(Subject(ss))
 		}(o)
 	}
-	ss.Unlock()
-	ss.Wait()
+}
+func (ss *StdinSubject) SetState(p Payload) Subject {
+	ss.Lock()
+	defer ss.Unlock()
+	ss.state = p
+	return ss
+}
+func (ss *StdinSubject) GetState() Payload {
+	ss.RLock()
+	defer ss.RUnlock()
+	return ss.state
 }
 
 type ObserverA struct{}
 
-func (*ObserverA) Update(p Payload) {
+func (*ObserverA) Update(s Subject) {
+	p := s.GetState()
 	fmt.Printf("observer A receive [%d] %s\n", p.Type, p.Data)
 }
 
@@ -70,7 +81,8 @@ type ObserverX struct {
 	name string
 }
 
-func (o *ObserverX) Update(p Payload) {
+func (o *ObserverX) Update(s Subject) {
+	p := s.GetState()
 	fmt.Printf("observer [%s] receive [%d] %s\n", o.name, p.Type, p.Data)
 }
 
@@ -114,7 +126,8 @@ func main() {
 		// 初始化payload
 		p := Payload{}
 		fmt.Fscan(strings.NewReader(str), &p.Type, &p.Data)
-		subject.Notify(p)
+
+		subject.SetState(p).Notify()
 	}
 
 }
