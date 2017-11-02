@@ -18,11 +18,11 @@
 ### Behavioral 行為
  - 責任鍊 Chain-of-responsibility [golang](golang/chain-of-responsibility/main.go) [UML](chain-of-responsibility.png)
  - 命令 Command [golang](golang/command/main.go) [UML](command.png)
+ - 觀察者 Observer
  - 解釋器 Interpreter
  - 迭代器 Iterstor
  - 中介者 Mediator
  - 備忘錄 Memento
- - 觀察者 Observer
  - 狀態 State
  - 策略 Strategy
  - 樣板方法 Template Method
