@@ -74,5 +74,6 @@ function main($flags) {
     $director = new SetsDirector(new $builder);
     return $director->make();
 }
+// 使用場景: 當物件初始化的步驟繁瑣時,避免在各處佈滿初始化細節
 // 優點: 不管客戶點何種套餐, 建構者物件不會忘了給
 // 缺點: 如果該套餐沒附飲料, 你還是需要給一個空實作的飲料方法
