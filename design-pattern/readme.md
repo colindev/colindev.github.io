@@ -20,7 +20,7 @@
  - 命令 Command [golang](golang/command/main.go) [UML](command.png)
  - 觀察者 Observer [golang](golang/observer/main.go) [UML](observer.png)
  - 解釋器 Interpreter
- - 迭代器 Iterstor
+ - 迭代器 Iterator [golang](golang/iterator/main.go) [UML](iterator.png)
  - 中介者 Mediator
  - 備忘錄 Memento
  - 狀態 State
