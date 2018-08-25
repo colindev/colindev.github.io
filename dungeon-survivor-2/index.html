@@ -1,0 +1,233 @@
+<html>
+	<head>
+		<title>Dungeon Suvivor 2</title>
+	</head>
+	<style type="text/css">
+		html, body {
+			background-color: #EFEFEF;
+		}
+		label {
+			display: block;
+		}
+		#main, #side {
+			background-color: #fff;
+			padding: 10px;
+			display: inline-block;
+		}
+		#main {
+			width: 49%;
+			float: left;
+			margin-right: 1px;
+		}
+		#side {
+			width: 45%;
+
+		}
+	</style>
+
+	<body>
+
+		<div id="main">
+		<label id="worker">工人
+			<input type="number" min="0" max="250" value="250">
+		</label>
+		<label id="speed">
+			<input type="number" min="10" max="30" value="10">秒
+		</label>
+		<hr/>
+		<label id="food">食物
+			<input type="number" min="0" max="210" value="0" food-cost="0">/210
+			<div>產量:<span>0</span></div>
+		</label>
+		<label id="wood">木材
+			<input type="number" min="0" max="150" value="0" food-cost="2">/150
+			<div>產量:<span>0</span></div>
+		</label>
+		<label id="iron">鐵
+			<input type="number" min="0" max="100" value="0" food-cost="3">/100
+			<div>產量:<span>0</span></div>
+		</label>
+		<label id="crystal">水晶
+			<input type="number" min="0" max="60" value="0" food-cost="4">/60
+			<div>產量:<span>0</span></div>
+		</label>
+		<label id="mithril">秘銀
+			<input type="number" min="0" max="60" value="0" food-cost="9">/60
+			<div>產量:<span>0</span></div>
+		</label>
+
+		</div>
+
+		<div id="side">
+			<label id="stock-food">食物
+				<input type="number" min="0" value="0">
+				<span>0</span>燒完
+			</label>
+			<label id="stock-wood">獲得木材
+				<input type="number" readonly="readonly" value="0">
+			</label>
+			<label id="stock-iron">獲得鐵
+				<input type="number" readonly="readonly" value="0">
+			</label>
+			<label id="stock-crystal">獲得水晶
+				<input type="number" readonly="readonly" value="0">
+			</label>
+			<label id="stock-mithril">獲得秘銀
+				<input type="number" readonly="readonly" value="0">
+			</label>
+		</div>
+
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+		(function($){
+			var $speed = $('#speed').find('input'),
+				$worder = $("#worker").find('input'),
+				$food = $("#food").find('input'),
+				$wood = $("#wood").find('input'),
+				$iron = $("#iron").find('input'),
+				$crystal = $("#crystal").find('input'),
+				$mithril = $("#mithril").find('input'),
+				materials = [$wood, $iron, $crystal, $mithril];
+
+			function countCost($inp) {
+				return (parseInt($inp.attr('food-cost')) || 0) * $inp.val()
+			}
+			function allCost() {
+				return materials.reduce(function(a, b){
+						var n = a;
+						if (a && a.find) {
+							n = countCost(a);
+						}
+						if (b && b.find) {
+							n += countCost(b);
+						}
+
+						return n;
+					});
+			}
+
+			$food.on('change', function(e){
+
+				var $this = $(this),
+					max = 1*$this.attr('max'),
+					oldProduce = $this.data('info') ? $this.data('info').val : 0,
+					produce = 1*$this.val(),
+					worker = 1*$worder.val();
+
+				if (worker < produce - oldProduce) {
+					$this.val(oldProduce + worker).change();
+					return false;
+				}
+
+				if (produce > max) {
+
+					$this.val(max).change();
+					return false;
+				}
+				$this.data('info', {val: produce});
+
+				var w = $worder.val();
+				$worder.val(w - (produce - oldProduce));
+
+				var n = allCost();
+
+				$this.parent().find('span').html(produce - n);
+
+				
+			});
+
+			materials.map(function($item){
+
+				$item.on('change', function(e){
+					var $this = $(this),
+						max = 1*$this.attr('max'),
+						oldProduce = $this.data('info') ? $this.data('info').val : 0,
+						produce = 1*$this.val(),
+						worker = 1*$worder.val();
+
+					if (worker < produce - oldProduce) {
+						$this.val(oldProduce + worker).change();
+						return false;
+					}
+
+					if (produce > max) {
+						$this.val(max).change();
+						return false;
+					}
+					$this.data('info', {val: produce});
+
+					var w = $worder.val();
+					$worder.val(w - (produce - oldProduce));
+					$food.change();
+
+					$this.parent().find('span').html(produce);
+
+				});
+			});
+
+			$food.change();
+			materials.map(function($item){
+				$item.change();
+			});
+
+			// -------------------------------------------
+			var $sFood = $("#stock-food").find('input'),
+				$sWood = $("#stock-wood").find('input'),
+				$sIron = $("#stock-iron").find('input'),
+				$sCrystal = $("#stock-crystal").find('input'),
+				$sMithril = $("#stock-mithril").find('input'),
+				maps = [
+					{
+						produce: $wood,
+						display: $sWood
+					},
+					{
+						produce: $iron,
+						display: $sIron
+					},
+					{
+						produce: $crystal,
+						display: $sCrystal
+					},
+					{
+						produce: $mithril,
+						display: $sMithril
+					},
+				];
+
+			(function($food, materials){
+				materials.concat($food, $sFood, $speed).map(function($inp){
+					$inp.on('change', function(e){
+						var sp = 1*$speed.val(),
+							spend = -1 * (1*$food.val() - allCost());
+
+						if (spend <= 0) {
+							$sFood.parent().find('span').html(0);
+							return
+						}
+						var times = ($sFood.val()/spend) >> 0,
+							seconds = times * sp,
+							h = seconds / 3600 >> 0,
+							m = (seconds % 3600) / 60 >> 0
+							s = seconds % 60;
+						
+
+						$sFood.parent().find('span').html(`${h}h ${m}m ${s}s`);
+						
+						maps.map(function(o){
+							o.display.val(o.produce.val() * times);
+						});
+
+					});
+				});
+
+
+			})($food, materials);
+
+
+		})(jQuery);
+
+		</script>
+	</body>
+</html>
