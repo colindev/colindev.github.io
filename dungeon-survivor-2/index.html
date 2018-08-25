@@ -9,6 +9,16 @@
 		label {
 			display: block;
 		}
+        p,span {
+            font-size: 8px;
+            color: #666;
+        }
+        .red {
+            color: red;
+        }
+        .green {
+            color: green;
+        }
 		#main, #side {
 			background-color: #fff;
 			padding: 10px;
@@ -132,8 +142,14 @@
 
 				var n = allCost();
 
-				$this.parent().find('span').html(produce - n);
-
+				$v = $this.parent().find('span').html(produce - n);
+                
+                $v.remove('class');
+                if (produce -n > 0) {
+                    $v.addClass('green');
+                } else {
+                    $v.addClass('red');
+                }
 				
 			});
 
@@ -161,7 +177,7 @@
 					$worder.val(w - (produce - oldProduce));
 					$food.change();
 
-					$this.parent().find('span').html(produce);
+					$this.parent().find('span').html(produce).addClass('green');
 
 				});
 			});
