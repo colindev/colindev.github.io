@@ -5,12 +5,12 @@
 	<style type="text/css">
 		html, body {
 			background-color: #EFEFEF;
+            font-size: 11px;
 		}
 		label {
 			display: block;
 		}
         p,span {
-            font-size: 8px;
             color: #666;
         }
         .red {
@@ -177,8 +177,11 @@
 					$worder.val(w - (produce - oldProduce));
 					$food.change();
 
-					$this.parent().find('span').html(produce).addClass('green');
-
+					$v = $this.parent().find('span').html(produce);
+                    $v.remove('class');
+                    if (produce > 0) {
+                        $v.addClass('green');
+                    }
 				});
 			});
 
