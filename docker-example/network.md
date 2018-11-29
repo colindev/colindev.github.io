@@ -54,3 +54,22 @@ ref: [Mac OS X 上基于 FreeBSD/bhyve 的虚拟技术 xhyve](https://www.vpsee.
 當network mode 指定為host 時,等同於跟host 同一個網路環境.
 不過要注意的是, 由於mac 的虛擬技術不同, 所以行為並不會像文件所說
 
+#### About [none]
+
+[Disable networking for a container](https://docs.docker.com/network/none/)
+
+#### About [container]
+
+```
+## 執行一個nginx container
+# docker run --rm -itd nginx
+
+## 查看container id
+# docker ps
+
+## 接著執行一個centos:7 container
+# docker run --rm -it --network container:[nginx container id] centos:7 /bin/bash
+
+## in container terminal
+# curl localhost
+```
