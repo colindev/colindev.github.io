@@ -1,0 +1,33 @@
+version: '3'
+services:
+  golang:
+    image: golang:alpine
+    volumes:
+    - ./golang/src:/go/src
+    - ./golang/bin:/go/bin
+    environment:
+      CGO_ENABLED: '0'
+    command:
+    - go
+    - install
+    - hello
+
+  internal:
+    image: alpine
+    depends_on:
+    - golang
+    volumes:
+    - ./golang/bin/hello:/app/hello
+    command:
+    - /app/hello
+    ports:
+    - 8000:80
+
+  nginx:
+    image: nginx
+    links:
+    - internal
+    volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+    - 8080:80
