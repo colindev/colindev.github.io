@@ -11,6 +11,9 @@ Docker network mode 有以下四種模式
 ```
 ## 啟動一個名為web 的nginx container
 # docker run --rm -it -p 8000:80 --name web nginx
+
+## 查看預設的network 
+# docker network inspect bridge
 ```
 
 ```
