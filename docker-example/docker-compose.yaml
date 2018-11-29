@@ -3,8 +3,8 @@ services:
   golang:
     image: golang:alpine
     volumes:
-    - ./golang/src:/go/src
-    - ./golang/bin:/go/bin
+    - ./golang/src:/go/src:z
+    - ./golang/bin:/go/bin:z
     environment:
       CGO_ENABLED: '0'
     command:
@@ -17,7 +17,7 @@ services:
     depends_on:
     - golang
     volumes:
-    - ./golang/bin/hello:/app/hello
+    - ./golang/bin/hello:/app/hello:z
     command:
     - /app/hello
     ports:
@@ -28,6 +28,6 @@ services:
     links:
     - internal
     volumes:
-    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:z
     ports:
     - 8080:80
