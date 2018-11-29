@@ -24,13 +24,13 @@ terminal 2
 ## 查看預設的network, 應該會類似下圖 
 # docker network inspect bridge
 ```
-[network-01](images/network-01.png)
+![network-01](images/network-01.png)
 
 ```
 ## 回到剛剛跑起來的centos:7 terminal, 應該可以看到如下圖
 # curl http://[web IPv4Address]
 ```
-[network-02](images/network-02.png)
+![network-02](images/network-02.png)
 
 ```
 ## build 一個簡單的curl image
