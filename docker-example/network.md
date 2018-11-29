@@ -1,14 +1,14 @@
 
 ### Network
 
-#### Link name
-
 Docker network mode 有以下四種模式
 
 - Brige (預設)
 - Host
 - None
 - Container
+
+#### Brige via Link name
 
 terminal 1
 ```
