@@ -41,7 +41,8 @@ terminal 2
 ## 使用--link 將兩個container 關聯起來, 應該能看到類似02圖
 # docker run --rm -it --link web curl http://web
 
-## 問題: 為什麼--link 可以讓一個container 認識另一個container name?
 ```
+
+>> 問題: 為什麼`--link` 可以讓一個container 認識另一個container name?
 [答案](images/network-03.png)
 
