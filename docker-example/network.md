@@ -43,8 +43,8 @@ terminal 2
 
 ```
 
->> 問題: 為什麼`--link` 可以讓一個container 認識另一個container name?
-[答案](images/network-03.png)
+> 問題: 為什麼`--link` 可以讓一個container 認識另一個container name?
+> [答案](images/network-03.png)
 
 #### About [host]
 
