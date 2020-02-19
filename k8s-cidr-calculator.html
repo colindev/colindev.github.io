@@ -37,7 +37,7 @@ label {
     <hr>
 
     <label>
-        數量轉遮罩
+        數字換算適合遮罩
         <input id="num2mask" type="number" placeholder="請輸入數字">
         <span id="dis-num2mask"></span>
     </label>
@@ -96,8 +96,14 @@ var nodeMask = document.querySelector("#node-mask"),
 
     num2mask.onchange = function(e){
 
-        var n = parseInt(num2mask.value, 10) || 0;
-        disNum2mask.innerText = n >= 2 ? 32 - (Math.ceil(Math.log2(n)) + 1) : 31;
+        var n = parseInt(this.value, 10) || 0,
+            len = (n >= 2 ? 32 - (Math.ceil(Math.log2(n)) + 1) : 31);
+
+        this.value = n;
+
+        disNum2mask.innerText = `
+            /${len} = ${Math.pow(2, 32-len)} 個ip
+        `;
     };
 
     num2mask.onchange();
