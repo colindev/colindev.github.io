@@ -170,7 +170,8 @@ var nodeMask = document.querySelector("#node-mask"),
         var ipv4Long = ip2long(n1, n2, n3, n4), 
             maskLong = mask2long(mask),
             min = ipv4Long & maskLong,
-            max = min + parseInt('1'.repeat(32-mask), 2);
+            max = min + parseInt('1'.repeat(32-mask), 2),
+            total = max - min;
 
 
         disIpCidr.innerHTML = `
@@ -180,6 +181,7 @@ var nodeMask = document.querySelector("#node-mask"),
         ip bin = ${('0'.repeat(32-ipv4Long.toString(2).length) + ipv4Long.toString(2)).replace(/(\d{8})/g, '$1 ')}<br>
         min = ${min}<br>
         max = ${max}<br>
+        total = ${total}<br>
         ip first = ${long2ip(min)}<br>
         ip last = ${long2ip(max)}<br>
         `;
