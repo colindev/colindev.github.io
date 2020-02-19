@@ -34,6 +34,14 @@ label {
 
     </div>
 
+    <hr>
+
+    <label>
+        數量轉遮罩
+        <input id="num2mask" type="number" placeholder="請輸入數字">
+        <span id="dis-num2mask"></span>
+    </label>
+
     <script>
 (function(){
 var nodeMask = document.querySelector("#node-mask"),
@@ -71,6 +79,18 @@ var nodeMask = document.querySelector("#node-mask"),
         count();
     };
 
+    // ===
+
+    var num2mask = document.querySelector("#num2mask"),
+        disNum2mask = document.querySelector("#dis-num2mask");
+
+    num2mask.onchange = function(e){
+
+        var n = parseInt(num2mask.value, 10) || 0;
+        disNum2mask.innerText = n >= 2 ? 32 - (Math.ceil(Math.log2(n)) + 1) : 31;
+    };
+
+    num2mask.onchange();
 
     
 })();
