@@ -42,6 +42,16 @@ label {
         <span id="dis-num2mask"></span>
     </label>
 
+    <hr>
+
+    <label>
+        ip cidr 計算
+        <input id="ipcidr" type="text" placeholder="1.2.3.4/32">
+        <br>
+        <span id="dis-ipcidr"></span>
+    </label>
+
+
     <script>
 (function(){
 var nodeMask = document.querySelector("#node-mask"),
@@ -92,6 +102,82 @@ var nodeMask = document.querySelector("#node-mask"),
 
     num2mask.onchange();
 
+    // ===
+
+    var ipcidr = document.querySelector("#ipcidr"),
+        disIpCidr = document.querySelector("#dis-ipcidr");
+
+    function long2ip(n) {
+        var n1 = (n >> 24) & 0xff,
+            n2 = (n >> 16) & 0xff,
+            n3 = (n >> 8) & 0xff,
+            n4 = n & 0xff;
+
+        return [n1, n2, n3, n4].join('.');
+    }
+
+    function ip2long(a,b,c,d) {
+        
+        var s = '';
+        [a,b,c,d].forEach(function(n){
+            var ss = n.toString(16);
+            if (ss.length == 1) {
+                ss = '0'+ss;
+            }
+            s = s + ss;
+        });
+
+        return parseInt(s, 16);
+    }
+
+    function mask2long(mask) {
+        return parseInt('1'.repeat(mask)+'0'.repeat(32-mask), 2);
+    }
+
+    ipcidr.onchange = function(e){
+        
+        var m = ipcidr.value.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)\/(\d+)$/);
+        if (!m) {
+            disIpCidr.innerText = 'invalid';
+            return
+        }
+        var n1 = parseInt(m[1], 10), 
+            n2 = parseInt(m[2], 10), 
+            n3 = parseInt(m[3], 10), 
+            n4 = parseInt(m[4], 10), 
+            mask = parseInt(m[5], 10), 
+            valid = true;
+
+        [n1, n2, n3, n4].forEach(function(n){
+            if (255 < n) {
+                valid = false;
+            }
+        });
+        if (0 > mask || 32 < mask) {
+            valid = false;
+        }
+        if (!valid) {
+            disIpCidr.innerText = 'invalid';
+            return
+        }
+
+        var ipv4Long = ip2long(n1, n2, n3, n4), 
+            maskLong = mask2long(mask),
+            min = ipv4Long & maskLong,
+            max = min + parseInt('1'.repeat(32-mask), 2);
+
+
+        disIpCidr.innerHTML = `
+        mask = ${mask}<br>
+        mask long = ${maskLong}<br>
+        mask bin = ${maskLong.toString(2).replace(/(\d{8})/g, '$1 ')}<br>
+        ip bin = ${('0'.repeat(32-ipv4Long.toString(2).length) + ipv4Long.toString(2)).replace(/(\d{8})/g, '$1 ')}<br>
+        min = ${min}<br>
+        max = ${max}<br>
+        ip first = ${long2ip(min)}<br>
+        ip last = ${long2ip(max)}<br>
+        `;
+    };
     
 })();
     </script>
