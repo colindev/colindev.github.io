@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <title>K8S CIDR 計算機</title>
+    <style>
+label {
+    display: block;
+}
+    </style>
+</head>
+
+<body>
+
+    <label>
+        子網段遮罩長度<br>
+        16 <input id="node-mask" type="range" value="26" min="16" step="1" max="32" /> 32
+    </label>
+    <label>
+        每個節點最大pod數<br>
+        8 <input id="per-node-max-pods" type="range" value="64" min="8" step="1" max="110" /> 110
+    </label>
+
+    <div>
+        <p>節點(node)遮罩: <span id="dis-node-mask"></span></p>
+        <p>節點(node)數量: <span id="dis-nodes"></span></p>
+        <p>每個節點pod遮罩: <span id="dis-pod-mask-per-node"></span></p>
+        <p>每個節點最大pod數: <span id="dis-per-node-max-pods"></span></p>
+        <p>最多可容納pod: <span id="dis-max-pods"></span></p>
+        <p>合計pods CIDR (Cluster IPv4 CIDR): <span id="dis-cluster-ipv4-cidr"></span></p>
+
+    </div>
+
+    <script>
+(function(){
+var nodeMask = document.querySelector("#node-mask"),
+    perNodeMaxPods = document.querySelector("#per-node-max-pods"),
+    disNodeMask = document.querySelector("#dis-node-mask"),
+    disNodes = document.querySelector("#dis-nodes"),
+    disPodMaskPerNode = document.querySelector("#dis-pod-mask-per-node"),
+    disPerNodeMaxPods = document.querySelector("#dis-per-node-max-pods"),
+    disMaxPods = document.querySelector("#dis-max-pods"),
+    disClusterIpv4Cidr = document.querySelector("#dis-cluster-ipv4-cidr");
+
+    function count(){
+
+        var numNodeMask = parseInt(nodeMask.value, 10),
+            numPodsPerNode = parseInt(perNodeMaxPods.value, 10),
+            numNodes = Math.pow(2, 32-numNodeMask),
+            numPodMaskPerNode = 32 - (Math.ceil(Math.log2(numPodsPerNode))+1),
+            numMaxPods = numPodsPerNode * numNodes,
+            numClusterIpv4Cidr = 32 - (32 - numNodeMask) - (32 - numPodMaskPerNode);
+
+        disNodeMask.innerText = numNodeMask;
+        disPerNodeMaxPods.innerText = numPodsPerNode;
+        disNodes.innerText = numNodes;
+        disPodMaskPerNode.innerText = numPodMaskPerNode;
+        disMaxPods.innerText = numMaxPods;
+        disClusterIpv4Cidr.innerText = numClusterIpv4Cidr;
+    }
+
+    count();
+
+    nodeMask.onchange = function(e){
+        count();
+    };
+    perNodeMaxPods.onchange = function(e){
+        count();
+    };
+
+
+    
+})();
+    </script>
+
+</body>
+
+</html>
