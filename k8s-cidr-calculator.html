@@ -200,7 +200,7 @@ var nodeMask = document.querySelector("#node-mask"),
             maskLong = mask2long(mask),
             min = ipv4Long & maskLong,
             max = min + parseInt('1'.repeat(32-mask), 2),
-            total = max - min;
+            total = max - min + 1;
 
 
         disIpCidr.innerHTML = `
