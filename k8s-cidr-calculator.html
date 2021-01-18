@@ -31,19 +31,19 @@ em {
         子網段遮罩長度<br>
         16 <input id="node-mask" type="range" value="26" min="16" step="1" max="32" /> 32
     </label>
+    <p>叢集節點(node)遮罩: <span id="dis-node-mask"></span></p>
     <label>
         每個節點最大pod數<br>
         8 <input id="per-node-max-pods" type="range" value="64" min="8" step="1" max="110" /> 110
     </label>
+    <p>每個節點最大pod數: <span id="dis-per-node-max-pods"></span><br>
+        <em>// 由於Node數量減半, 整體Pods 數只能到達計算的一半</em></p>
 
     <div>
-        <p>叢集節點(node)遮罩: <span id="dis-node-mask"></span></p>
         <p>叢集節點(node)數量: <span id="dis-nodes"></span><br>
             <em>// 將Node數量減半, 讓Cluster 的整體Node 數只能到達子網段一半<br>
                 // 預留足夠的空間運行VM 或者是Node rolling upgrade</em></p>
         <p>每個節點pod遮罩: <span id="dis-pod-mask-per-node"></span></p>
-        <p>每個節點最大pod數: <span id="dis-per-node-max-pods"></span><br>
-            <em>// 由於Node數量減半, 整體Pods 數只能到達計算的一半</em></p>
         <p>最多可容納pod: <span id="dis-max-pods"></span></p>
         <p>合計pods CIDR (Cluster IPv4 CIDR): <span id="dis-cluster-ipv4-cidr"></span><br>
             <em>// 由於Node數量減半, Cluster Pods IP Range 只需要原來的一半</em></p>
@@ -124,7 +124,7 @@ var nodeMask = document.querySelector("#node-mask"),
         disPerNodeMaxPods.innerText = numPodsPerNode;
         disNodes.innerHTML = `${numNodes/2} <span class="s">(${numNodes})</span>`;
         disPodMaskPerNode.innerText = numPodMaskPerNode;
-        disMaxPods.innerHTML = `${numMaxPods/2} <span class="s">(${numMaxPods})</span>;
+        disMaxPods.innerHTML = `${numMaxPods/2} <span class="s">(${numMaxPods})</span>`;
         disClusterIpv4Cidr.innerHTML = `${numClusterIpv4Cidr+1} <span class="s">(${numClusterIpv4Cidr})</span>`;
     }
 
