@@ -39,12 +39,14 @@ em {
     <div>
         <p>叢集節點(node)遮罩: <span id="dis-node-mask"></span></p>
         <p>叢集節點(node)數量: <span id="dis-nodes"></span><br>
-            <em>// 將計算好的Clister IP Range 減半, 讓CLuster 的整體Node 數只能到達子網段一半<br>
+            <em>// 將Node數量減半, 讓Cluster 的整體Node 數只能到達子網段一半<br>
                 // 預留足夠的空間運行VM 或者是Node rolling upgrade</em></p>
         <p>每個節點pod遮罩: <span id="dis-pod-mask-per-node"></span></p>
-        <p>每個節點最大pod數: <span id="dis-per-node-max-pods"></span></p>
+        <p>每個節點最大pod數: <span id="dis-per-node-max-pods"></span><br>
+            <em>// 由於Node數量減半, 整體Pods 數只能到達計算的一半</em></p>
         <p>最多可容納pod: <span id="dis-max-pods"></span></p>
-        <p>合計pods CIDR (Cluster IPv4 CIDR): <span id="dis-cluster-ipv4-cidr"></span></p>
+        <p>合計pods CIDR (Cluster IPv4 CIDR): <span id="dis-cluster-ipv4-cidr"></span><br>
+            <em>// 由於Node數量減半, Cluster Pods IP Range 只需要原來的一半</em></p>
 
     </div>
 
@@ -122,7 +124,7 @@ var nodeMask = document.querySelector("#node-mask"),
         disPerNodeMaxPods.innerText = numPodsPerNode;
         disNodes.innerHTML = `${numNodes/2} <span class="s">(${numNodes})</span>`;
         disPodMaskPerNode.innerText = numPodMaskPerNode;
-        disMaxPods.innerText = numMaxPods;
+        disMaxPods.innerHTML = `${numMaxPods/2} <span class="s">(${numMaxPods})</span>;
         disClusterIpv4Cidr.innerHTML = `${numClusterIpv4Cidr+1} <span class="s">(${numClusterIpv4Cidr})</span>`;
     }
 
