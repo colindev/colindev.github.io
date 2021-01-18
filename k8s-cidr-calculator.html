@@ -10,10 +10,22 @@ body {
 label {
     display: block;
 }
+em {
+    font-size: 8pt;
+    color: #999;
+}
+.s {
+    text-decoration: line-through;
+    color: #C00; 
+}
     </style>
 </head>
 
 <body>
+
+    <p>
+        Subnet range need double of cluster nodes
+        <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr">K8S Flexible Pod CIDR</a></p>
 
     <label>
         子網段遮罩長度<br>
@@ -25,8 +37,10 @@ label {
     </label>
 
     <div>
-        <p>節點(node)遮罩: <span id="dis-node-mask"></span></p>
-        <p>節點(node)數量: <span id="dis-nodes"></span></p>
+        <p>叢集節點(node)遮罩: <span id="dis-node-mask"></span></p>
+        <p>叢集節點(node)數量: <span id="dis-nodes"></span><br>
+            <em>// 將計算好的Clister IP Range 減半, 讓CLuster 的整體Node 數只能到達子網段一半<br>
+                // 預留足夠的空間運行VM 或者是Node rolling upgrade</em></p>
         <p>每個節點pod遮罩: <span id="dis-pod-mask-per-node"></span></p>
         <p>每個節點最大pod數: <span id="dis-per-node-max-pods"></span></p>
         <p>最多可容納pod: <span id="dis-max-pods"></span></p>
@@ -92,21 +106,24 @@ var nodeMask = document.querySelector("#node-mask"),
     disMaxPods = document.querySelector("#dis-max-pods"),
     disClusterIpv4Cidr = document.querySelector("#dis-cluster-ipv4-cidr");
 
+    function countNum2mask(n) {
+        return (n >= 2 ? 32 - (Math.ceil(Math.log2(n)) + 1) : 31);
+    }
     function count(){
 
         var numNodeMask = parseInt(nodeMask.value, 10),
             numPodsPerNode = parseInt(perNodeMaxPods.value, 10),
             numNodes = Math.pow(2, 32-numNodeMask),
-            numPodMaskPerNode = 32 - (Math.ceil(Math.log2(numPodsPerNode))+1),
+            numPodMaskPerNode = countNum2mask(numPodsPerNode),
             numMaxPods = numPodsPerNode * numNodes,
             numClusterIpv4Cidr = 32 - (32 - numNodeMask) - (32 - numPodMaskPerNode);
 
         disNodeMask.innerText = numNodeMask;
         disPerNodeMaxPods.innerText = numPodsPerNode;
-        disNodes.innerText = numNodes;
+        disNodes.innerHTML = `${numNodes/2} <span class="s">(${numNodes})</span>`;
         disPodMaskPerNode.innerText = numPodMaskPerNode;
         disMaxPods.innerText = numMaxPods;
-        disClusterIpv4Cidr.innerText = numClusterIpv4Cidr;
+        disClusterIpv4Cidr.innerHTML = `${numClusterIpv4Cidr+1} <span class="s">(${numClusterIpv4Cidr})</span>`;
     }
 
     count();
@@ -123,10 +140,11 @@ var nodeMask = document.querySelector("#node-mask"),
     var num2mask = document.querySelector("#num2mask"),
         disNum2mask = document.querySelector("#dis-num2mask");
 
+
     num2mask.onchange = function(e){
 
         var n = parseInt(this.value, 10) || 0,
-            len = (n >= 2 ? 32 - (Math.ceil(Math.log2(n)) + 1) : 31);
+            len = countNum2mask(n);
 
         this.value = n;
 
